@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'Accounts',
     'ML',
     'Solutions',
+    'Posts',
 ]
 
 SITE_ID = 1

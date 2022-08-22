@@ -32,6 +32,8 @@ def run(request):
     # print('results.pandas().xyxy[0]-> ', results.pandas().xyxy[0])
     # print('json_rst-> ', json_rst)
 
+    
+    
     # 클래스 별로 솔루션 제공해서 보내기
     json_rst = json.loads(results.pandas().xyxy[0].to_json(orient='index'))
     
@@ -42,6 +44,6 @@ def run(request):
         json_rst[str(i)]['solution_default'] = solution_serializer.data[0]['solution_default']
     json_rst['detected_image'] = detected_img
     
-    # return HttpResponse(f'<img src={imgtitle}/>')
+    # return HttpResponse(f'<img src={detected_img}/>')
     # return JsonResponse(img_serializers.data[0]['image'], safe=False)
     return JsonResponse(json_rst)
