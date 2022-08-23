@@ -22,3 +22,7 @@
 >   | HTTP | Path | Permission | Body | 목적 |
 >   | --- | --- | --- | --- | --- |
 >   |**GET** |/ML | None | None | yoloV5 |
+
+---
+ ## Workflow
+![](workflow.png)
