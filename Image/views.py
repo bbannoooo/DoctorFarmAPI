@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .models import ImageFile
-from .serializers import ImageFileSerializer
+from .models import ImageFile, DetectedImageFile
+from .serializers import ImageFileSerializer, DetectedImageFileSerializer
 from rest_framework import viewsets
 # from rest_framework import permissions
 
@@ -14,3 +14,6 @@ class ImageFile_main(viewsets.ModelViewSet):
     # def get_queryset(self):
     #     email =self.kwargs['email']
     #     return ImageFile.objects.filter(email=email)
+class DetectedImageFile_main(viewsets.ModelViewSet):
+    queryset = DetectedImageFile.objects.all()
+    serializer_class = DetectedImageFileSerializer
