@@ -1,4 +1,4 @@
-from .models import ImageFile, DetectedImageFile
+from Image.models import ImageFile, DetectedImageFile
 from rest_framework import serializers
 
 class ImageFileSerializer(serializers.ModelSerializer):

@@ -1,5 +1,5 @@
 from rest_framework_simplejwt.views import TokenViewBase
-from .serializers import CustomTokenRefreshSerializer
+from Accounts.serializers import CustomTokenRefreshSerializer
 
 
 class CustomTokenRefreshView(TokenViewBase):

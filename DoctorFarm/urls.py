@@ -26,4 +26,5 @@ urlpatterns = [
     # path('rest_framework_simplejwt/', include('rest_framework_simplejwt.urls')),
     path('ML/', include('ML.urls', namespace='ML')),
     path('solutions/', include('Solutions.urls')),
+    path('post/', include('Posts.urls')),
 ]

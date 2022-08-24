@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .models import ImageFile, DetectedImageFile
-from .serializers import ImageFileSerializer, DetectedImageFileSerializer
+from Image.models import ImageFile, DetectedImageFile
+from Image.serializers import ImageFileSerializer, DetectedImageFileSerializer
 from rest_framework import viewsets
 # from rest_framework import permissions
 

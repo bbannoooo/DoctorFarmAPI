@@ -1,4 +1,4 @@
-from .models import Solutions
+from Solutions.models import Solutions
 from rest_framework import serializers
 
 class SolutionsSerializer(serializers.ModelSerializer):

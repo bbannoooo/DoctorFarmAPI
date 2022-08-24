@@ -1,19 +1,22 @@
 from django.db import models
 
-# Create your models here.
-from django.db import models
-
-# Create your models here.
 class Post(models.Model):
     id = models.BigAutoField(help_text="Post ID", primary_key=True)
-
-    title = models.CharField(help_text="Post title", max_length=100, blank=False, null=False)
-
-
-class PostContents(models.Model):
-    id = models.BigAutoField(help_text="PostContents ID", primary_key=True)
-    post_id = models.ForeignKey("Post", related_name="post", on_delete=models.CASCADE, db_column="post_id")
-    contents = models.TextField(help_text="PostContents text", blank=False, null=False)
-    detected_image = models.ImageField(upload_to='detected_images')
+    email = models.CharField(max_length=100, blank=True, null=True)
+    
+    detected_image = models.ImageField()
+    detected_class = models.IntegerField()
+    detected_default_solution = models.TextField(help_text="detected_default_solution")
+    detected_contents = models.TextField(help_text="PostContents text", blank=True, null=True)
+    
     solution_image = models.ImageField(upload_to='solution_images', blank=True, null=True)
-    solution_contents = models.TextField(help_text="PostContents text", blank=True, null=True)
+    solution_contents = models.TextField(blank=True, null=True)
+    
+    is_public = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
+
+    class Meta:
+        db_table = 'Posts'
+        ordering = ['-created_at']

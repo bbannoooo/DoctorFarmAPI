@@ -29,6 +29,8 @@ def run(request):
         class_id = json_rst[str(i)]['class']
         solution_id = Solutions.objects.filter(solution_id=class_id)
         solution_serializer = SolutionsSerializer(solution_id, many=True)
+        print('json_rst-> ',json_rst)
+        print('solution_serializer.data-> ', solution_serializer.data)
         json_rst[str(i)]['solution_default'] = solution_serializer.data[0]['solution_default']
     
     # detected_image save
@@ -44,4 +46,4 @@ def run(request):
     detected_object_serializer.save(image=detected_image_url)
 
     # return JsonResponse(img_serializers.data[0]['image'], safe=False)
-    return Response(json_rst)
+    return JsonResponse(json_rst)
