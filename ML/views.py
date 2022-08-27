@@ -8,10 +8,12 @@ from Image.serializers import ImageFileSerializer, DetectedImageFileSerializer
 from Solutions.models import Solutions
 from Solutions.serializers import SolutionsSerializer
 
+
 def run(request):
     model = torch.hub.load('yolov5_code', 'custom', path='model_best.pt', source='local')
 
-    user = request.user
+    user = request.GET.get('firmUser')
+    print(user)
     img_url = ImageFile.objects.filter(email=user)
     img_serializers = ImageFileSerializer(img_url, many=True)
 
@@ -45,5 +47,4 @@ def run(request):
     detected_object_serializer.is_valid(raise_exception=True)
     detected_object_serializer.save(image=detected_image_url)
 
-    # return JsonResponse(img_serializers.data[0]['image'], safe=False)
     return JsonResponse(json_rst)
