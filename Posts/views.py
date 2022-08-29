@@ -7,3 +7,6 @@ from rest_framework import viewsets
 class Post_main(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user = self.request.user)

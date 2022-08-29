@@ -1,8 +1,10 @@
 from django.db import models
+from Accounts.models import User
 
 class Post(models.Model):
     id = models.BigAutoField(help_text="Post ID", primary_key=True)
-    email = models.CharField(max_length=100, blank=True, null=True)
+    # email = models.CharField(max_length=100, blank=True, null=True)
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE, db_column='user')
     
     detected_image = models.ImageField()
     detected_class = models.IntegerField()

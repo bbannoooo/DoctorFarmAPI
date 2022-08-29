@@ -12,11 +12,13 @@ from Solutions.serializers import SolutionsSerializer
 def run(request):
     model = torch.hub.load('yolov5_code', 'custom', path='model_best.pt', source='local')
 
-    user = request.GET.get('firmUser')
-    print(user)
-    img_url = ImageFile.objects.filter(email=user)
+    # user = request.GET.get('firmUser')
+    # user = request.GET.get('user')
+    user = request.user
+    print('user->', user)
+    img_url = ImageFile.objects.filter(user=user)
     img_serializers = ImageFileSerializer(img_url, many=True)
-
+    print('img_serializers.data->', img_serializers.data)
     img = Image.open(img_serializers.data[0]['image'][1:])
     results = model(img)
     results.render()
@@ -39,12 +41,12 @@ def run(request):
     detected_image_url = 'detected/detected_' + img_serializers.data[0]['image'].split('/')[-1]
     detected_class_id = class_id
     data = {
-        'email': str(user),
+        # 'email': str(user),
         'class_id': detected_class_id,
     }
     
     detected_object_serializer = DetectedImageFileSerializer(data=data)
     detected_object_serializer.is_valid(raise_exception=True)
-    detected_object_serializer.save(image=detected_image_url)
+    detected_object_serializer.save(image=detected_image_url, user=user)
 
     return JsonResponse(json_rst)

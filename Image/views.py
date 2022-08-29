@@ -8,6 +8,8 @@ class ImageFile_main(viewsets.ModelViewSet):
     queryset = ImageFile.objects.all()
     serializer_class = ImageFileSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(user = self.request.user)
     # def create(self, request, *args, **kwargs):
     #     return super().create(request, *args, **kwargs)
 
@@ -17,3 +19,6 @@ class ImageFile_main(viewsets.ModelViewSet):
 class DetectedImageFile_main(viewsets.ModelViewSet):
     queryset = DetectedImageFile.objects.all()
     serializer_class = DetectedImageFileSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user = self.request.user)
