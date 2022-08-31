@@ -10,15 +10,17 @@ class ImageFile_main(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user = self.request.user)
-    # def create(self, request, *args, **kwargs):
-    #     return super().create(request, *args, **kwargs)
-
-    # def get_queryset(self):
-    #     email =self.kwargs['email']
-    #     return ImageFile.objects.filter(email=email)
+        
 class DetectedImageFile_main(viewsets.ModelViewSet):
     queryset = DetectedImageFile.objects.all()
     serializer_class = DetectedImageFileSerializer
 
     def perform_create(self, serializer):
         serializer.save(user = self.request.user)
+    
+    def get_queryset(self):
+        queryset = DetectedImageFile.objects.all()
+        user = self.request.user
+        if user is not None and user != 'Anonymous':
+            queryset = DetectedImageFile.objects.filter(user = user)
+        return queryset
