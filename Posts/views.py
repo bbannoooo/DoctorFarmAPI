@@ -2,6 +2,8 @@ from django.shortcuts import render
 from Posts.models import Post
 from Posts.serializers import PostSerializer
 from rest_framework import viewsets
+from Image.models import DetectedImageFile
+from Image.serializers import DetectedImageFileSerializer
 # Create your views here.
 
 class Post_main(viewsets.ModelViewSet):
@@ -9,7 +11,11 @@ class Post_main(viewsets.ModelViewSet):
     serializer_class = PostSerializer
 
     def perform_create(self, serializer):
-        serializer.save(user = self.request.user)
+        user = self.request.user
+        image = DetectedImageFile.objects.filter(user=user)
+        img_serializers = DetectedImageFileSerializer(image, many=True)
+        img_url = 'detected/' + img_serializers.data[0]['image'].split('/')[-1]
+        serializer.save(user = user, detected_image = img_url)
 
 class Post_mypage(viewsets.ModelViewSet):
     queryset = Post.objects.all()
