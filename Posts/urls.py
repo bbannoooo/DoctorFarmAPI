@@ -8,6 +8,7 @@ app_name = 'Posts'
 
 router = routers.DefaultRouter(trailing_slash=False)
 router.register('', views.Post_main)
+router.register('mypage', views.Post_mypage)
 
 urlpatterns = [
     path('',include(router.urls)),
