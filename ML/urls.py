@@ -5,4 +5,5 @@ app_name = 'ML'
 
 urlpatterns = [
     path('', views.run),
+    path('test/', views.test),
 ]

@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from PIL import Image
 import json
 import torch
@@ -7,6 +7,7 @@ from Image.serializers import ImageFileSerializer, DetectedImageFileSerializer
 from Solutions.models import Solutions
 from Solutions.serializers import SolutionsSerializer
 from Accounts.models import User
+import requests
 
 def run(request):
     model = torch.hub.load('yolov5', 'custom', path='model_best.pt', source='local')
@@ -48,3 +49,19 @@ def run(request):
     detected_object_serializer.save(image=detected_image_url, user=userinfo)
 
     return JsonResponse(json_rst)
+
+def test(request):
+    img_url = ImageFile.objects.all()
+    img_serializers = ImageFileSerializer(img_url, many=True)
+
+    files = (('input',open(img_serializers.data[3]['image'].lstrip('/'), 'rb')),('files',(open(img_serializers.data[0]['image'].lstrip('/'), 'rb'))) ,('files',(open(img_serializers.data[1]['image'].lstrip('/'), 'rb'))))
+
+    # files2 = {
+    #     'input': open(img_serializers.data[0]['image'].lstrip('/'), 'rb'),
+    #     'files': files
+    # }
+    # print(files2['files'])
+
+    response = requests.post('http://127.0.0.1:8000/similarity/', files=files)
+
+    return HttpResponse(response)
