@@ -16,6 +16,10 @@ class Post_main(viewsets.ModelViewSet):
         img_serializers = DetectedImageFileSerializer(image, many=True)
         img_url = 'detected/' + img_serializers.data[0]['image'].split('/')[-1]
         serializer.save(user = user, detected_image = img_url)
+    
+    def get_queryset(self):
+        queryset = Post.objects.filter(is_public = True)
+        return queryset
 
 class Post_mypage(viewsets.ModelViewSet):
     queryset = Post.objects.all()

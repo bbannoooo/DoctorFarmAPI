@@ -9,5 +9,4 @@ class CustomTokenRefreshSerializer(serializers.Serializer):
     def validate(self, attrs):
         refresh = RefreshToken(attrs['refresh_token'])
         data = {'access_token': str(refresh.access_token)}
-        print(data)
         return data

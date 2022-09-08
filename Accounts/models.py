@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-# from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import gettext_lazy as _
 
 
@@ -10,7 +9,7 @@ from Accounts.managers import CustomUserManager
 class User(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
-
+    cash = models.IntegerField(default=0)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
