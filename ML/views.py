@@ -4,8 +4,8 @@ import json
 import torch
 from Image.models import ImageFile
 from Image.serializers import ImageFileSerializer, DetectedImageFileSerializer
-from Solutions.models import Solutions
-from Solutions.serializers import SolutionsSerializer
+from Solutions.models import Code
+from Solutions.serializers import CodeSerializer
 from Accounts.models import User
 import requests
 
@@ -19,6 +19,17 @@ def run(request):
 
     img_url = ImageFile.objects.filter(user__in=user)
     img_serializers = ImageFileSerializer(img_url, many=True)
+    
+
+    ## crop mmclassification Test Code
+    # file = {'input':open(img_serializers.data[0]['image'][1:], 'rb')}
+
+    # response = requests.post('http://211.184.190.112:8001/crop_mmclassification/', files=file)
+    # data = response.json()
+    # print('response-> ', data['crop_id'])
+    # crop_id = data['crop_id']
+    crop_id = 1
+    
     img = Image.open(img_serializers.data[0]['image'][1:])
     results = model(img)
     results.render()
@@ -35,14 +46,17 @@ def run(request):
 
         for i in range(len(json_rst)):
             class_id = json_rst[str(i)]['class']
-            solution_id = Solutions.objects.filter(solution_id=class_id)
-            solution_serializer = SolutionsSerializer(solution_id, many=True)
-            # print('solution_serializer.data-> ', solution_serializer.data)
-            json_rst[str(i)]['solution_default'] = solution_serializer.data[0]['solution_default']
-        
+            # solution_id = Solutions.objects.filter(solution_id=class_id)
+            # solution_serializer = SolutionsSerializer(solution_id, many=True)
+            # # print('solution_serializer.data-> ', solution_serializer.data)
+            # json_rst[str(i)]['solution_default'] = solution_serializer.data[0]['solution_default']
+        print(class_id)
+        code = Code.objects.filter(dist_id=class_id).filter(crop_id=crop_id)
+        code = CodeSerializer(code, many=True).data[0]['id']
+
         # detected_image save
         detected_image_url = 'detected/detected_' + img_serializers.data[0]['image'].split('/')[-1]
-        detected_class_id = class_id
+        detected_class_id = code
         data = {
             'class_id': detected_class_id,
         }
