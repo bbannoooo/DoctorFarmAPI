@@ -7,6 +7,9 @@ from Image.serializers import ImageFileSerializer, DetectedImageFileSerializer
 from Solutions.models import Code
 from Solutions.serializers import CodeSerializer
 from Accounts.models import User
+from Posts.models import Post
+from Posts.serializers import PostSerializer
+import requests
 import requests
 
 def run(request):
@@ -31,12 +34,14 @@ def run(request):
     crop_id = 1
     
     img = Image.open(img_serializers.data[0]['image'][1:])
+    
     results = model(img)
     results.render()
     
     
     # 클래스 별로 솔루션 제공해서 보내기
     json_rst = json.loads(results.pandas().xyxy[0].to_json(orient='index'))
+    print(json_rst)
     if not json_rst:
         raise Http404('Detected Nothing')
     else:
@@ -44,8 +49,11 @@ def run(request):
         for img in results.ims:
             Image.fromarray(img).save('./media/detected/detected_'+ img_serializers.data[0]['image'].split('/')[-1])
 
+        nearest = None
+
         for i in range(len(json_rst)):
             class_id = json_rst[str(i)]['class']
+            
             # solution_id = Solutions.objects.filter(solution_id=class_id)
             # solution_serializer = SolutionsSerializer(solution_id, many=True)
             # # print('solution_serializer.data-> ', solution_serializer.data)
@@ -75,3 +83,29 @@ def test(request):
     response = requests.post('http://127.0.0.1:8000/similarity/', files=files)
 
     return HttpResponse(response)
+
+def deep_ranking(request):
+    detected_url = DetectedImageFile.objects.all()
+    count = DetectedImageFile.objects.count()
+    detected_serializers = DetectedImageFileSerializer(detected_url, many=True)
+
+    files = []
+    for i in range(1, count):
+        files.append(('files',open(detected_serializers.data[i]['image'].lstrip('/'), 'rb')))
+        print(detected_serializers.data[i]['image'].lstrip('/'))
+    files.append(('input_file',open(detected_serializers.data[0]['image'].lstrip('/'), 'rb')))
+    response = requests.post('http://127.0.0.1:8002/similarity/', files=files)
+    response_json = response.json()
+    data = {}
+
+    localhost = 'http://127.0.0.1:8000/'
+    for i in range(1, 4):
+        detected_image_name = localhost + response_json['rank'+str(i)]
+        post = Post.objects.filter(is_public=True).filter(detected_image=detected_image_name)
+        post_serializers = PostSerializer(post)
+        print(post_serializers)
+        data['rank'+str(i)] = post_serializers.data
+        print(data['rank'+str(i)])
+
+    print(data)
+    return HttpResponse(data)
