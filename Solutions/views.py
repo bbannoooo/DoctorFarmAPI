@@ -15,3 +15,8 @@ class Code_main(viewsets.ModelViewSet):
 class Pesticide_main(viewsets.ModelViewSet):
     queryset = Pesticide.objects.all()
     serializer_class = PesticideSerializer
+
+    def get_queryset(self):
+        code_id = self.request.GET.get('code_id')
+        queryset = Pesticide.objects.filter(code_id = code_id)
+        return queryset
