@@ -2,7 +2,7 @@ from django.http import JsonResponse, HttpResponse, Http404
 from PIL import Image
 import json
 import torch
-from Image.models import ImageFile
+from Image.models import ImageFile, DetectedImageFile
 from Image.serializers import ImageFileSerializer, DetectedImageFileSerializer
 from Solutions.models import Code
 from Solutions.serializers import CodeSerializer
@@ -85,27 +85,29 @@ def test(request):
     return HttpResponse(response)
 
 def deep_ranking(request):
-    detected_url = DetectedImageFile.objects.all()
-    count = DetectedImageFile.objects.count()
-    detected_serializers = DetectedImageFileSerializer(detected_url, many=True)
+    class_id = request.GET.get('class_id_real')
+    Post_url = Post.objects.filter(is_public=True).filter(detected_class=class_id).exclude(detected_image='')
+    count = len(Post_url)
+    Post_serializers = PostSerializer(Post_url, many=True)
 
     files = []
     for i in range(1, count):
-        files.append(('files',open(detected_serializers.data[i]['image'].lstrip('/'), 'rb')))
-        print(detected_serializers.data[i]['image'].lstrip('/'))
+        files.append(('files',open(Post_serializers.data[i]['detected_image'].lstrip('/'), 'rb')))
+    
+    detected_image_url = DetectedImageFile.objects.all()
+    detected_serializers = DetectedImageFileSerializer(detected_image_url, many=True)
+
     files.append(('input_file',open(detected_serializers.data[0]['image'].lstrip('/'), 'rb')))
     response = requests.post('http://127.0.0.1:8002/similarity/', files=files)
     response_json = response.json()
     data = {}
 
-    localhost = 'http://127.0.0.1:8000/'
+    localhost = "detected/"
+    localhost_media = 'http://127.0.0.1:8000'
     for i in range(1, 4):
         detected_image_name = localhost + response_json['rank'+str(i)]
-        post = Post.objects.filter(is_public=True).filter(detected_image=detected_image_name)
-        post_serializers = PostSerializer(post)
-        print(post_serializers)
-        data['rank'+str(i)] = post_serializers.data
-        print(data['rank'+str(i)])
+        post_data = Post.objects.filter(is_public=True).filter(detected_image=detected_image_name)
+        post_data_serializers = PostSerializer(post_data, many=True)
+        data[str(i-1)] = [post_data_serializers.data[0]['solution_contents'], localhost_media + post_data_serializers.data[0]['detected_image']]
 
-    print(data)
-    return HttpResponse(data)
+    return JsonResponse(data)
