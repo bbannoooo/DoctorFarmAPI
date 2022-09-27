@@ -6,10 +6,6 @@ class Solutions(models.Model):
     symptom = models.TextField()
     solution_default = models.TextField()
 
-    # solution_id = models.IntegerField()
-    # pesticide = models.CharField(max_length=100)
-    # pesticide_image = models.ImageField(upload_to='pesticide_image', default='media/default-image.jpg', null=True)
-    # pesticide_link = models.URLField()
     class Meta:
         db_table = 'Solutions'
 
@@ -21,6 +17,7 @@ class Code(models.Model):
         db_table = 'Code'
 
 class Pesticide(models.Model):
+    pesticide_image = models.ImageField(upload_to='pesticide_image', null=True, blank=True)
     code_id = models.IntegerField(blank=False)
     item_name = models.TextField()
     igr_content	= models.TextField()

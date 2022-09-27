@@ -91,7 +91,7 @@ def deep_ranking(request):
     Post_serializers = PostSerializer(Post_url, many=True)
 
     files = []
-    for i in range(1, count):
+    for i in range(count):
         files.append(('files',open(Post_serializers.data[i]['detected_image'].lstrip('/'), 'rb')))
     
     detected_image_url = DetectedImageFile.objects.all()
