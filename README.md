@@ -42,5 +42,9 @@
 >   |**POST** |/solutions | SuperUser | solution_id, solution_default, pesticide, pesticide_image, pesticide_link | 이미지 유사도 분석 with FastAPI |
 
 ---
+ ## Service Architecture
+![](service.jpg)
+
+---
  ## Workflow
 ![](workflow.png)
